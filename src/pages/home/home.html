@@ -1,14 +1,16 @@
-<ion-header>
+<!--ion-header>
   <ion-navbar>
     <ion-title>
       Ionic Blank
     </ion-title>
   </ion-navbar>
-</ion-header>
+</ion-header-->
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+	<div class="content-app" text-center>
+		<img src="/assets/imgs/logo.png">
+		<button ion-button class="custom-btn" round large (click)="initGame()">
+			Empezar&nbsp;&nbsp;<ion-icon ios="ios-create" md="md-create"></ion-icon>
+		</button>
+	</div>  
 </ion-content>

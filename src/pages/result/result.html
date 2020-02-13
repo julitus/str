@@ -1,0 +1,46 @@
+<!--
+  Generated template for the ResultPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content padding>
+	<div class="content-app" text-center>
+		<ion-grid>
+			<ion-row>
+				<ion-col col-12 class="result-img">
+					<img src="/assets/imgs/logo.png">
+				</ion-col>
+			</ion-row>
+			<ion-row class="content-result">
+				<ion-col col-12 class="result-statistics"><span>Puntos: </span><b>{{score}}</b></ion-col>
+				<ion-col col-12 class="result-statistics"><span>Correctos: </span><b>{{successful}}</b></ion-col>
+				<ion-col col-12 class="result-statistics"><span>Incorrectos: </span><b>{{wrong}}</b></ion-col>
+				<ion-col col-12 class="result-statistics"><span>Saltados: </span><b>{{jumped}}</b></ion-col>
+			</ion-row>
+			<ion-row class="result-title">
+				<ion-col col-12>
+					<h5>SOLUCIÓN</h5>
+				</ion-col>
+			</ion-row>
+			<div class="result-quizzes">
+				<ion-row align-items-center *ngFor="let item of quizzes; let i = index;" class="{{addClass(i)}} row">
+					<ion-col>{{item.gsx$titulo.$t}}</ion-col>
+					<ion-col>{{item.gsx$pista.$t}}</ion-col>
+					<ion-col col-auto>
+						<ion-row class="result-score" [ngStyle]="{ 'background-color' : item.color }">
+							<ion-col col-12>{{item.gsx$respuesta.$t}}</ion-col>
+							<ion-col col-12>{{item.score + ' / ' + item.gsx$puntos.$t}}</ion-col>
+						</ion-row>
+					</ion-col>
+				</ion-row>
+			</div>
+			<ion-row>
+				<ion-col col-12>
+					<button ion-button round class="result-btn" (click)="replay()">VOLVER A JUGAR</button>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</div>
+</ion-content>

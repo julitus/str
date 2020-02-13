@@ -1,0 +1,54 @@
+<!--
+  Generated template for the GamePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content padding>
+	<div class="content-app-game" text-center>
+		<ion-grid>
+			<ion-row>
+				<ion-col col-md-4 col-5 class="game-score"><span>Puntos: </span><b>{{score}}</b></ion-col>
+				<ion-col col-md-4 col-offset-md-4 col-5 offset-2 class="game-time">{{initTime}}</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col col-12 class="game-point">
+					<b>(</b>Por <b>{{currentQuiz.gsx$puntos.$t}}</b> punto(s)<b>)</b>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col col-12 class="game-title">
+					{{currentQuiz.gsx$titulo.$t}}
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col col-12 class="game-clue">
+					{{currentQuiz.gsx$pista.$t}}
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col col-12 class="game-answer">
+					<!--ion-card>
+						<ion-list>
+							<ion-item-->
+								<ion-input autocapitalize="off" autofocus="autofocus" [(ngModel)]="inputAnswer" name="answer" placeholder="Tu respuesta..."></ion-input>
+							<!--/ion-item>
+						</ion-list>
+					</ion-card-->
+				</ion-col>
+			</ion-row>
+			<ion-row class="game-btns">
+				<ion-col col-6 class="game-btn">
+					<button ion-button block round class="jump-btn" (click)="jumpQuiz()">SALTAR</button>
+				</ion-col>
+				<ion-col col-6 class="game-btn">
+					<button ion-button block round class="check-btn" (click)="checkAnswer()">ARRIESGAR</button>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	</div> 
+
+	<ion-card>
+	</ion-card>
+</ion-content>
