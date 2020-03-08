@@ -10,7 +10,6 @@ import { HomePage } from '../home/home';
  * Ionic pages and navigation.
  */
 
-@IonicPage()
 @Component({
   selector: 'page-result',
   templateUrl: 'result.html',
@@ -18,10 +17,11 @@ import { HomePage } from '../home/home';
 export class ResultPage {
 
 	score: any;
+	time: any;
 	successful: any;
 	wrong: any;
-	jumped: any;
-	last: any;
+	//jumped: any;
+	//last: any;
 
 	quizzes: any[] = [];
 
@@ -31,18 +31,20 @@ export class ResultPage {
 	) {
 
 		this.score = navParams.get('score');
+		this.time = navParams.get('time');
 		this.successful = navParams.get('successful');
 		this.wrong = navParams.get('wrong');
-		this.jumped = navParams.get('jumped');
+		//this.jumped = navParams.get('jumped');
 
-		this.last = navParams.get('last');
+		//this.last = navParams.get('last');
 		this.quizzes = navParams.get('quizzes');
 
 		console.log("score: ", this.score);
+		console.log("time: ", this.time);
 		console.log("successful: ", this.successful);
 		console.log("wrong: ", this.wrong);
-		console.log("jumped: ", this.jumped);
-		console.log("last: ", this.last);
+		//console.log("jumped: ", this.jumped);
+		//console.log("last: ", this.last);
 
 		console.log("quizzes: ", this.quizzes);
 	}

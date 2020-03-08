@@ -44,14 +44,45 @@ export class HomePage {
 			result => {
 			
 				this.responseData = result;
-				this.quizzes = this.responseData.feed.entry;
-				this.shuffleData();
+				let rawData = this.responseData.feed.entry;
+				this.quizzes = [];
+				let quiz = { 
+						title: '',
+						key: '',
+						time: 0,
+						hasKey: false,
+						quizzes: [] 
+					};
+				for (var i = 0; i < rawData.length; ++i) {
+					if (rawData[i].gsx$desafio.$t != "") {
+						quiz = { 
+							title: rawData[i].gsx$desafio.$t,
+							key: rawData[i].gsx$clave.$t,
+							hasKey: (rawData[i].gsx$clave.$t != "" ? true : false),
+							time: parseInt(rawData[i].gsx$tiempos.$t),
+							quizzes: []
+						};
+					} else {
+						quiz.quizzes.push({ 
+							label: rawData[i].gsx$etiqueta.$t,
+							title: rawData[i].gsx$titulo.$t,
+							clue: rawData[i].gsx$pista.$t,
+							answer: rawData[i].gsx$respuesta.$t,
+							points: parseFloat(rawData[i].gsx$puntos.$t),
+						});
+					}
+					if ((i + 1) == rawData.length || rawData[i + 1].gsx$desafio.$t != "") {
+						this.quizzes.push(quiz);
+					}
+				}
+				//this.shuffleData();
 				this.isOk = true;
 				loader.dismiss();
 
-				localStorage.setItem("data", JSON.stringify(this.quizzes));
+				//localStorage.setItem("data", JSON.stringify(this.quizzes));
 
-				console.log(localStorage.getItem("data"));
+				//console.log(localStorage.getItem("data"));
+				console.log(this.quizzes);
 
 			}, (err) => {
 				this.isOk = false;
@@ -60,7 +91,7 @@ export class HomePage {
 			});
 	}
 
-	shuffleData() {
+	/*shuffleData() {
 		
 		var currentIndex = this.quizzes.length, temporaryValue, randomIndex;
 
@@ -73,21 +104,26 @@ export class HomePage {
 			this.quizzes[currentIndex] = this.quizzes[randomIndex];
 			this.quizzes[randomIndex] = temporaryValue;
 		}
-	}
+	}*/
 
-	initGame() {
+	initGame(id: any) {
 
-		if (this.quizzes.length > 0 && this.isOk) {
-			this.navCtrl.setRoot(GamePage);
-			this.navCtrl.popToRoot();
+		if (this.quizzes[id].quizzes.length > 0 && this.isOk) {
+			if (this.quizzes[id].key != "") {
+				this.checkKey(id);
+			} else {
+				console.log(">> Ingreso sin password");
+				this.navCtrl.setRoot(GamePage, { quiz: this.quizzes[id] });
+				this.navCtrl.popToRoot();
+			}
 		} else {
-			this.messageOK("¡Upss!", "No se pudo cargar los datos correctamente, vuelva abrir el aplicativo.");
+			this.messageOK("¡Upss!", "No se pudo cargar los datos correctamente, vuelva a cargarlos.");
 		}
 	}
 
 	getHttpData() {
 
-		let debug = false;
+		let debug = true;
 		let url = (debug ? 'https://spreadsheets.google.com/feeds/list/1qZaMhR1RitdZBpXqwAHCyXhXcPTdSqlixuJxW2lI4yQ/od6/public/values?alt=json' : 'https://cors-anywhere.herokuapp.com/https://spreadsheets.google.com/feeds/list/1qZaMhR1RitdZBpXqwAHCyXhXcPTdSqlixuJxW2lI4yQ/od6/public/values?alt=json');
 
 		return new Promise((resolve, reject) => {
@@ -96,11 +132,48 @@ export class HomePage {
 				resolve(res);
 			}, (err) => {
 				this.messageOK("Error", "No se pudo cargar los datos, revise su conexión a Internet.");
-				//alert("No se pudo cargar los datos, revise su conexión a Internet.");
 				console.log(err);
 				reject(err);
 			});
 		});
+	}
+
+	checkKey(id: any) {
+
+		let alert = this.alertCtrl.create({
+			title: 'Clave',
+			inputs: [
+				{
+					name: 'key',
+					placeholder: 'clave',
+					type: 'password'
+				}
+			],
+			buttons: [
+				{
+					text: 'Cancelar',
+					role: 'cancel',
+					handler: data => {
+						console.log('Cancel clicked');
+					}
+				},
+				{
+					text: 'Aceptar',
+					handler: data => {
+						console.log(data.key == this.quizzes[id].key);
+						if (data.key == this.quizzes[id].key) {
+							this.navCtrl.setRoot(GamePage, { quiz: this.quizzes[id] });
+							this.navCtrl.popToRoot();
+							console.log(">> Ingreso con password correcta");
+						} else {
+							this.messageOK("¡Upss!", "No es la clave correcta.");
+							return false;
+						}
+					}
+				}
+			]
+		});
+		alert.present();
 	}
 
 	messageOK(title: string, msg: string) {
