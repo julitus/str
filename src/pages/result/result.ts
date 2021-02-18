@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 import { HomePage } from '../home/home';
+
+import { Record } from '../../model/record/record.model';
+import { RecordService } from '../../services/record.service';
 
 /**
  * Generated class for the ResultPage page.
@@ -16,37 +20,63 @@ import { HomePage } from '../home/home';
 })
 export class ResultPage {
 
+	titleQuiz: any;
 	score: any;
 	time: any;
 	successful: any;
 	wrong: any;
-	//jumped: any;
-	//last: any;
+	hasKey: boolean;
+	finish: any;
 
 	quizzes: any[] = [];
 
+	record: Record = {
+	    userKey: '',
+	    title: '',
+	    score: '',
+	    time: '',
+	    successful: '',
+	    wrong: '',
+	    created: ''
+	};
+
 	constructor(
 		public navCtrl: NavController, 
-		public navParams: NavParams
+		public navParams: NavParams,
+		public db: AngularFireDatabase,
+		private recordService: RecordService
 	) {
 
+		this.titleQuiz = navParams.get('title');
 		this.score = navParams.get('score');
 		this.time = navParams.get('time');
 		this.successful = navParams.get('successful');
 		this.wrong = navParams.get('wrong');
-		//this.jumped = navParams.get('jumped');
+		this.hasKey = navParams.get('hasKey');
+		this.finish = navParams.get('finish');
 
-		//this.last = navParams.get('last');
 		this.quizzes = navParams.get('quizzes');
 
-		console.log("score: ", this.score);
-		console.log("time: ", this.time);
-		console.log("successful: ", this.successful);
-		console.log("wrong: ", this.wrong);
-		//console.log("jumped: ", this.jumped);
-		//console.log("last: ", this.last);
+		if (this.hasKey) {
 
-		console.log("quizzes: ", this.quizzes);
+			let userLocal = JSON.parse(localStorage.getItem("user"));
+			this.record.userKey = userLocal.key;
+			this.record.title = this.titleQuiz;
+			this.record.score = this.score;
+			this.record.time = this.time;
+			this.record.successful = this.successful;
+			this.record.wrong = this.wrong;
+			this.record.created = this.finish;
+
+			this.recordService.addRecord(this.record).then(ref => {})
+		}
+
+		//console.log("score: ", this.score);
+		//console.log("time: ", this.time);
+		//console.log("successful: ", this.successful);
+		//console.log("wrong: ", this.wrong);
+
+		//console.log("quizzes: ", this.quizzes);
 	}
 
 	replay() {

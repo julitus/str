@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, AlertController, Platform } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { AngularFireDatabase } from 'angularfire2/database';
 //import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
 import { HttpClient } from '@angular/common/http';
 
 import { GamePage } from '../game/game';
+
+import { User } from '../../model/user/user.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'page-home',
@@ -13,8 +17,13 @@ import { GamePage } from '../game/game';
 })
 export class HomePage {
 
+	user: User = {
+	    name: ''
+	};
+
 	responseData: any;
 	quizzes: any[] = [];
+	lastUpdated: any;
 	isOk: boolean;
 
 	constructor(
@@ -24,6 +33,8 @@ export class HomePage {
 		public http: HttpClient, 
 		public loadingCtrl: LoadingController,
 		public splashscreen: SplashScreen,
+		public db: AngularFireDatabase,
+		private userService: UserService
 	) {
 		/*platform.ready().then(() => {
 			this.splashscreen.hide();
@@ -33,6 +44,12 @@ export class HomePage {
 		} else { }*/
 
 		this.getData();
+
+		let userLocal = JSON.parse(localStorage.getItem("user"));
+	    if(!userLocal) {
+	    	this.updateUser();
+	    }
+
 	}
 
 	getData() {
@@ -77,15 +94,27 @@ export class HomePage {
 				}
 				//this.shuffleData();
 				this.isOk = true;
+				this.lastUpdated = new Date();
+				localStorage.setItem('lastUpdated', this.lastUpdated);
+				localStorage.setItem('quizzes', JSON.stringify(this.quizzes));
 				loader.dismiss();
 
-				//localStorage.setItem("data", JSON.stringify(this.quizzes));
-
-				//console.log(localStorage.getItem("data"));
-				console.log(this.quizzes);
+				//console.log(this.quizzes);
 
 			}, (err) => {
-				this.isOk = false;
+				//this.isOk = false;
+				//this.quizzes = [];
+				//let q = JSON.parse(localStorage.getItem('quizzes')) || [];
+				this.quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+				//console.log(q);
+				this.lastUpdated = localStorage.getItem('lastUpdated');
+			    /*if (q) {
+					this.quizzes = q;
+			    }*/
+			    /*if (!u) {
+					this.lastUpdated = u;
+			    }*/
+				this.isOk = true;
 				console.log("error:", err);
 				loader.dismiss();
 			});
@@ -109,15 +138,15 @@ export class HomePage {
 	initGame(id: any) {
 
 		if (this.quizzes[id].quizzes.length > 0 && this.isOk) {
-			if (this.quizzes[id].key != "") {
+			if (this.quizzes[id].hasKey) {
 				this.checkKey(id);
 			} else {
-				console.log(">> Ingreso sin password");
+				//console.log(">> Ingreso sin password");
 				this.navCtrl.setRoot(GamePage, { quiz: this.quizzes[id] });
 				this.navCtrl.popToRoot();
 			}
 		} else {
-			this.messageOK("¡Upss!", "No se pudo cargar los datos correctamente, vuelva a cargarlos.");
+			this.messageOK("¡Upss!", "No se actualizó la información correctamente, intente otra vez.");
 		}
 	}
 
@@ -131,7 +160,7 @@ export class HomePage {
 			.subscribe(res => {
 				resolve(res);
 			}, (err) => {
-				this.messageOK("Error", "No se pudo cargar los datos, revise su conexión a Internet.");
+				this.messageOK("Error", "No se pudo actualizar la información, revise su conexión a Internet.");
 				console.log(err);
 				reject(err);
 			});
@@ -140,13 +169,63 @@ export class HomePage {
 
 	checkKey(id: any) {
 
+		let userLocal = JSON.parse(localStorage.getItem("user"));
+		if (userLocal) {
+
+			let alert = this.alertCtrl.create({
+				title: 'Clave',
+				inputs: [
+					{
+						name: 'key',
+						placeholder: 'clave',
+						type: 'password'
+					}
+				],
+				buttons: [
+					{
+						text: 'Cancelar',
+						role: 'cancel',
+						handler: data => {
+							//console.log('Cancel clicked');
+						}
+					},
+					{
+						text: 'Aceptar',
+						handler: data => {
+							console.log(data.key == this.quizzes[id].key);
+							if (data.key == this.quizzes[id].key) {
+								this.navCtrl.setRoot(GamePage, { quiz: this.quizzes[id] });
+								this.navCtrl.popToRoot();
+								//console.log(">> Ingreso con password correcta");
+							} else {
+								this.messageOK("¡Upss!", "No es la clave correcta.");
+								return false;
+							}
+						}
+					}
+				]
+			});
+			alert.present();
+		} else {
+			this.messageOK("Mensaje", "Antes de ingresar actualice su Nombre.");
+		}
+	}
+
+	updateUser() {
+
+		let userLocal = JSON.parse(localStorage.getItem("user"));
+		let userName = "";
+	    if(userLocal) {
+	    	userName = userLocal.name
+	    }
+
 		let alert = this.alertCtrl.create({
-			title: 'Clave',
+			title: 'Nombre Alumno',
 			inputs: [
 				{
-					name: 'key',
-					placeholder: 'clave',
-					type: 'password'
+					name: 'name',
+					placeholder: 'nombre',
+					value: userName
 				}
 			],
 			buttons: [
@@ -154,19 +233,20 @@ export class HomePage {
 					text: 'Cancelar',
 					role: 'cancel',
 					handler: data => {
-						console.log('Cancel clicked');
+						//console.log('Cancel clicked');
 					}
 				},
 				{
 					text: 'Aceptar',
 					handler: data => {
-						console.log(data.key == this.quizzes[id].key);
-						if (data.key == this.quizzes[id].key) {
-							this.navCtrl.setRoot(GamePage, { quiz: this.quizzes[id] });
-							this.navCtrl.popToRoot();
-							console.log(">> Ingreso con password correcta");
+
+						data.name = data.name.replace(/  /g,'');
+						if (data.name != "" && data.name != " ") {
+							
+							this.saveUser(data.name);
+
 						} else {
-							this.messageOK("¡Upss!", "No es la clave correcta.");
+							this.messageOK("Alerta", "No ingrese campos vacios.");
 							return false;
 						}
 					}
@@ -174,11 +254,34 @@ export class HomePage {
 			]
 		});
 		alert.present();
+
+	}
+
+	saveUser(name: any) {
+
+		let userLocal = JSON.parse(localStorage.getItem("user"));
+		this.user.name = name;
+
+	    if(!userLocal) {
+			this.userService.addUser(this.user).then(ref => {
+		      	this.messageOK("¡Éxito!", "El nombre fue guardado correctamente.");
+		      	this.user.key = ref.key;
+				localStorage.setItem("user", JSON.stringify(this.user));
+		    })
+		    
+	    } else {
+	    	this.user.key = userLocal.key;
+	    	this.userService.updateUser(this.user).then(() => {
+		      	this.messageOK("¡Éxito!", "El nombre fue guardado correctamente.");
+				localStorage.setItem("user", JSON.stringify(this.user));
+		    })
+	    }
+		
 	}
 
 	messageOK(title: string, msg: string) {
 
-		console.log(msg);
+		//console.log(msg);
 		let alert = this.alertCtrl.create({
 			title: title,
 			subTitle: msg,

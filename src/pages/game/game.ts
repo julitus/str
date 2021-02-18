@@ -31,7 +31,8 @@ export class GamePage {
 	score: any = 0;
 	successful: any = 0;
 	wrong: any = 0;
-	//jumped: any = 0;
+	hasKey: boolean;
+	titleQuiz: any;
 
 	constructor(
 		public platform: Platform,
@@ -50,6 +51,8 @@ export class GamePage {
 		this.quizzes = this.superQuiz.quizzes;
 		this.constTime = this.superQuiz.time;
 		this.initTime = this.superQuiz.time;
+		this.hasKey = this.superQuiz.hasKey;
+		this.titleQuiz = this.superQuiz.title;
 
 		for (var i = 0; i < this.quizzes.length; ++i) {
 			this.quizzes[i]["color"] = "#068cce";
@@ -63,11 +66,7 @@ export class GamePage {
 		nativeAudio.preloadSimple('wrong', 'assets/sounds/wrong-sound.wav');
 		nativeAudio.preloadSimple('finish', 'assets/sounds/finish-sound.wav');
 		nativeAudio.preloadSimple('win', 'assets/sounds/win-sound.mp3');
-		console.log(this.superQuiz);
-
-		//this.quizzes = JSON.parse(localStorage.getItem("data"));
-		//this.currentQuiz = this.quizzes[this.currentPos];
-		//console.log(this.quizzes);
+		//console.log(this.superQuiz);
 	}
 
 	getNextPosElement(op: boolean) {
@@ -84,15 +83,7 @@ export class GamePage {
 
 		this.quizzes[this.currentPos].color = "#f6af05";
 		this.quizzes[this.currentPos].score = 0;
-		//this.currentPos++;
 		this.currentPos = this.getNextPosElement(false);
-		//this.jumped++;
-
-		/*if (this.currentPos >= this.quizzes.length) {
-			this.messageOK("¡Genial!", "Haz terminado el juego.");
-			//this.currentPos--;
-			this.endChallenge();
-		}*/
 
 		this.currentQuiz = this.quizzes[this.currentPos];
 	}
@@ -107,7 +98,6 @@ export class GamePage {
 					this.quizzes[this.currentPos].color = "#ea0707";
 					this.quizzes[this.currentPos].score = 0;
 					this.inputAnswer = "";
-					//this.currentPos++;
 					this.currentPos = this.getNextPosElement(true);
 					this.wrong++;
 					this.toastMessage("¡Incorrecto!", 3000, "top", false);
@@ -118,7 +108,6 @@ export class GamePage {
 					this.quizzes[this.currentPos].score = this.quizzes[this.currentPos].points;
 					this.score += this.quizzes[this.currentPos].points;
 					this.inputAnswer = "";
-					//this.currentPos++;
 					this.currentPos = this.getNextPosElement(true);
 					this.successful++;
 					this.toastMessage("¡Es correcto!", 3000, "top", true);
@@ -131,7 +120,6 @@ export class GamePage {
 			if (this.currentPos >= this.quizzes.length) {
 				this.nativeAudio.play('win');
 				this.messageOK("¡Genial!", "Haz terminado el juego.");
-				//this.currentPos--;
 				this.endChallenge();
 			} else {
 				this.currentQuiz = this.quizzes[this.currentPos];
@@ -141,13 +129,13 @@ export class GamePage {
 
 	validateAnswer() {
 
-		let currentAnswer = this.quizzes[this.currentPos].answer.toLowerCase()/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
-		let possibleAnswer = this.inputAnswer.toLowerCase()/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
+		let currentAnswer = this.quizzes[this.currentPos].answer.toLowerCase().replace(/ /g,'')/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
+		let possibleAnswer = this.inputAnswer.toLowerCase().replace(/ /g,'')/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
 
 		if (possibleAnswer != currentAnswer) {
 
 			possibleAnswer = possibleAnswer.replace(/ /g,'');
-			console.log(possibleAnswer);
+			//console.log(possibleAnswer);
 			if (possibleAnswer.length == currentAnswer.length) {
 				for (let i = 0; i < possibleAnswer.length; i++) {
 					if (possibleAnswer.substring(0, i) == currentAnswer.substring(0, i) && 
@@ -166,8 +154,8 @@ export class GamePage {
 
 			} else if (possibleAnswer.length + 1 == currentAnswer.length) {
 				for (let i = 0; i < currentAnswer.length; i++) {
-					console.log(possibleAnswer.substring(0, i), currentAnswer.substring(0, i));
-					console.log(possibleAnswer.substring(i), currentAnswer.substring(i + 1));
+					//console.log(possibleAnswer.substring(0, i), currentAnswer.substring(0, i));
+					//console.log(possibleAnswer.substring(i), currentAnswer.substring(i + 1));
 					if (possibleAnswer.substring(0, i) == currentAnswer.substring(0, i) && 
 						possibleAnswer.substring(i) == currentAnswer.substring(i + 1)) {
 						return 2;
@@ -182,12 +170,15 @@ export class GamePage {
 
 	endChallenge() {
 
-		this.navCtrl.setRoot(ResultPage, { 
+		this.navCtrl.setRoot(ResultPage, {
+			title: this.titleQuiz, 
 			score: this.score, 
 			time: (this.constTime - this.initTime),
 			successful: this.successful, 
 			wrong: this.wrong,
-			quizzes: this.quizzes
+			hasKey: this.hasKey,
+			quizzes: this.quizzes,
+			finish: this.getDate()
 		});
 		this.navCtrl.popToRoot();
 	}
@@ -210,9 +201,20 @@ export class GamePage {
 		}, 1000);
 	}
 
+	getDate() {
+		var d = new Date;
+   		return [d.getFullYear(),
+				d.getMonth()+1,
+				d.getDate()
+			   ].join('/')+' '+
+			   [d.getHours(),
+				d.getMinutes(),
+				d.getSeconds()].join(':');
+	}
+
 	messageOK(title: string, msg: string) {
 
-		console.log(msg);
+		//console.log(msg);
 		let alert = this.alertCtrl.create({
 			title: title,
 			subTitle: msg,

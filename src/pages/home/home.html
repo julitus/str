@@ -10,9 +10,14 @@
 	<div class="content-app" text-center>
 		<div class="custom-start">
 			<div class="custom-refresh">
+				<label *ngIf="lastUpdated"><b>Actualizado:</b> {{ lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</label>
+				<button ion-button icon-only round outline (click)="updateUser()"><ion-icon name="person"></ion-icon></button>
 				<button ion-button icon-only round outline (click)="getData()"><ion-icon name="refresh"></ion-icon></button>
 			</div>
-			<img src="/assets/imgs/logo.png">
+			<div>
+				<img src="/assets/imgs/logo.png">
+			</div>
+			<div class="autor-name">Curso de Razonamiento Verbal:<br><b>Lic. Ruth Rosario Coaquira</b></div>
 			<ion-grid  *ngIf="quizzes && quizzes.length" class="">
       			<ion-row>
       				<ion-col class="" col-3 col-sm-2 *ngFor="let quiz of quizzes; let i = index;">
