@@ -12,19 +12,36 @@ import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/dat
 import { FIREBASE_CONFIG } from './firebase.credentials';
 
 import { MyApp } from './app.component';
+import { LoginPage } from '../pages/login/login';
+import { RegisterPage } from '../pages/register/register';
 import { HomePage } from '../pages/home/home';
+import { ProfilePage } from '../pages/profile/profile';
+import { ChangePasswordPage } from '../pages/change-password/change-password';
 import { GamePage } from '../pages/game/game';
+import { GamesPage } from '../pages/games/games';
 import { ResultPage } from '../pages/result/result';
 
 import { UserService } from '../services/user.service';
 import { RecordService } from '../services/record.service';
 
+import { AuthProvider } from '../providers/auth/auth';
+import { ChallengeProvider } from '../providers/challenge/challenge';
+import { PlayerProvider } from '../providers/player/player';
+
+import { TextInputDirective } from '../directives/text-input/text-input';
+
 @NgModule({
   declarations: [
     MyApp,
+    LoginPage,
+    RegisterPage,
     HomePage,
+    ProfilePage,
+    ChangePasswordPage,
     GamePage,
-    ResultPage
+    GamesPage,
+    ResultPage,
+    TextInputDirective
   ],
   imports: [
     BrowserModule,
@@ -36,8 +53,13 @@ import { RecordService } from '../services/record.service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    LoginPage,
+    RegisterPage,
     HomePage,
+    ProfilePage,
+    ChangePasswordPage,
     GamePage,
+    GamesPage,
     ResultPage
   ],
   providers: [
@@ -46,7 +68,10 @@ import { RecordService } from '../services/record.service';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     NativeAudio,
     UserService,
-    RecordService
+    RecordService,
+    AuthProvider,
+    ChallengeProvider,
+    PlayerProvider
   ]
 })
 export class AppModule {}

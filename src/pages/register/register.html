@@ -1,0 +1,60 @@
+<ion-content padding>
+	
+	<div class="content-app" text-center>
+		<div class="back-btn-header">
+  			<button><ion-icon (click)="goToBack()" name="arrow-back"></ion-icon></button>
+  		</div>
+		<div class="custom-register">
+			<div>
+				<img src="/assets/imgs/logo.png">
+			</div>
+			<ion-card>
+			  <ion-card-content>
+
+			  	<h4>REGISTRO</h4>
+			    
+			    <ion-list no-lines>
+
+			      <ion-item>
+		            <ion-label>Nombres</ion-label>
+		            <ion-input [(ngModel)]="userData.firstname" type="text" (keyup)="validationUp('firstname')"></ion-input>
+		          </ion-item>
+		          <div class="error"><span *ngIf="!validation.firstname.valid">{{validation.firstname.msg}}</span></div>
+
+		          <ion-item>
+		            <ion-label>Apellidos</ion-label>
+		            <ion-input [(ngModel)]="userData.lastname" type="text" (keyup)="validationUp('lastname')"></ion-input>
+		          </ion-item>
+		          <div class="error"><span *ngIf="!validation.lastname.valid">{{validation.lastname.msg}}</span></div>
+
+		          <ion-item>
+		            <ion-label>Email</ion-label>
+		            <ion-input [(ngModel)]="userData.email" type="text" (keyup)="validationUp('email')" class="lower"></ion-input>
+		          </ion-item>
+		          <div class="error"><span *ngIf="!validation.email.valid">{{validation.email.msg}}</span></div>
+		  
+		          <ion-item>
+		            <ion-label>Contraseña</ion-label>
+		            <ion-input [(ngModel)]="userData.password" [type]="hidePassword ? 'password' : 'text'" (keyup)="validationUp('password')"></ion-input>
+		            <ion-icon slot="end" class="z-eye-icon" [name]="hidePassword ? 'md-eye' : 'md-eye-off'" (click)="hidePassword = !hidePassword" item-right></ion-icon>
+		          </ion-item>
+		          <div class="error"><span *ngIf="!validation.password.valid">{{validation.password.msg}}</span></div>
+
+		          <div class="buttons-content">
+		            <ion-grid>
+		              <ion-row>
+		                <ion-col col-12>
+		                  <button ion-button round block type="submit" class="jump-btn" (click)="register()">Regístrarme</button>
+		                </ion-col>
+		              </ion-row>
+		            </ion-grid>
+		          </div>
+
+		        </ion-list>
+
+			  </ion-card-content>
+			</ion-card>
+		</div>
+	</div>
+
+</ion-content>

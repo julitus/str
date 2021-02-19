@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFireDatabase } from 'angularfire2/database';
 
-import { HomePage } from '../home/home';
+import { GamesPage } from '../games/games';
 
 import { Record } from '../../model/record/record.model';
 import { RecordService } from '../../services/record.service';
@@ -81,7 +81,7 @@ export class ResultPage {
 
 	replay() {
 
-		this.navCtrl.setRoot(HomePage);
+		this.navCtrl.setRoot(GamesPage);
 		this.navCtrl.popToRoot();
 	}
 

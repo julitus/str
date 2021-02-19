@@ -26,9 +26,92 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 }
+/*.no-header .scroll-content, .no-header .fixed-content {
+	margin-top: 0px !important;
+}*/
+.no-header .toolbar-background-md {
+	background-color: transparent;
+	border-color: transparent;
+}
+.error {
+	height: 24px;
+	font-size: 12px;
+	color: red;
+}
+.item-md.item-input.input-has-focus .item-inner, .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner, .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
+    box-shadow: none;
+}
+.item-md .label-md {
+	font-size: 14px;
+}
+.item-md ion-icon {
+	z-index: 20;
+	color: #999;
+}
+.back-btn-header {
+	position: absolute;
+}
+.back-btn-header button {
+	background-color: transparent;
+}
+.back-btn-header button .icon-md {
+	color: #ffb100;
+	margin: 0;
+	background-color: rgba(255, 206, 93, .2);
+    border-radius: 50%;
+    padding: 10px 16px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.text-right {
+	text-align: right;
+}
+.toggle-md.toggle-checked .toggle-icon {
+	background-color: rgba(255, 206, 93, .6);
+}
+.toggle-md.toggle-checked .toggle-inner {
+	background-color: #ffb100;
+}
 .content-app, .content-app-game {
 	height: 100%;
 	position: relative;
+}
+.content-app .custom-login, .content-app .custom-register {
+	margin: auto;
+	text-align: center;
+}
+.content-app .custom-login img, .content-app .custom-register img {
+	margin-bottom: 10px;
+	margin-top: 20px;
+}
+.content-app .custom-login .card-md, .content-app .custom-register .card-md {
+	border-radius: 5px;
+	padding-top: 14px;
+}
+.content-app .custom-login .card-md .item-md, .content-app .custom-register .card-md .item-md {
+	background-color: rgba(255, 206, 93, .3);
+}
+.content-app .custom-login .card-md .item-md.toggle-login {
+	background-color: #fff;	
+}
+.content-app .custom-login .custom-btn {
+	background-color: #444f68;
+	width: 100%;
+	border: 1px solid #444;
+}
+.content-app .custom-login .jump-btn, .content-app .custom-register .jump-btn {
+	background-color: #ffb100;
+	width: 100%;
+	border: 1px solid #ffbc20;
+}
+.content-app .custom-login .text-right {
+	color: #999;
+}
+.content-app .custom-login h4, .content-app .custom-register h4 {
+	font-size: 16px;
+    padding-bottom: 16px;
+    color: #444f68;
+    font-weight: 500;
 }
 .content-app .custom-start {
 	position: absolute;
