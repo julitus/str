@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { AngularFireDatabase } from 'angularfire2/database';
 
 import { GamesPage } from '../games/games';
 
-import { Record } from '../../model/record/record.model';
-import { RecordService } from '../../services/record.service';
+import { ChallengeProvider } from '../../providers/challenge/challenge';
 
 /**
  * Generated class for the ResultPage page.
@@ -20,6 +19,8 @@ import { RecordService } from '../../services/record.service';
 })
 export class ResultPage {
 
+	responseData: any;
+
 	titleQuiz: any;
 	score: any;
 	time: any;
@@ -28,23 +29,22 @@ export class ResultPage {
 	hasKey: boolean;
 	finish: any;
 
-	quizzes: any[] = [];
+	questions: any;
 
-	record: Record = {
-	    userKey: '',
-	    title: '',
-	    score: '',
-	    time: '',
-	    successful: '',
-	    wrong: '',
-	    created: ''
-	};
+	userData = {
+		"challenge_id": 0,
+		"score": 0.0,
+		"time": 0,
+		"successful": 0,
+		"wrong": 0
+	}
 
 	constructor(
 		public navCtrl: NavController, 
 		public navParams: NavParams,
-		public db: AngularFireDatabase,
-		private recordService: RecordService
+		public alertCtrl: AlertController,
+		public loadingCtrl: LoadingController,
+		public challengeProvider: ChallengeProvider
 	) {
 
 		this.titleQuiz = navParams.get('title');
@@ -55,28 +55,43 @@ export class ResultPage {
 		this.hasKey = navParams.get('hasKey');
 		this.finish = navParams.get('finish');
 
-		this.quizzes = navParams.get('quizzes');
+		this.questions = navParams.get('questions');
 
-		if (this.hasKey) {
+		this.userData.challenge_id = navParams.get('challenge_id');
+		this.userData.score = this.score;
+		this.userData.time = this.time;
+		this.userData.successful = this.successful;
+		this.userData.wrong = this.wrong;
 
-			let userLocal = JSON.parse(localStorage.getItem("user"));
-			this.record.userKey = userLocal.key;
-			this.record.title = this.titleQuiz;
-			this.record.score = this.score;
-			this.record.time = this.time;
-			this.record.successful = this.successful;
-			this.record.wrong = this.wrong;
-			this.record.created = this.finish;
+		this.saveResult();
+	}
 
-			this.recordService.addRecord(this.record).then(ref => {})
-		}
+	async saveResult() {
 
-		//console.log("score: ", this.score);
-		//console.log("time: ", this.time);
-		//console.log("successful: ", this.successful);
-		//console.log("wrong: ", this.wrong);
+		let currentUser = JSON.parse(localStorage.getItem("userData"));
 
-		//console.log("quizzes: ", this.quizzes);
+      	let loader = this.loadingCtrl.create({ content: "Guardando resultados" });
+      	loader.present();
+
+      	await this.challengeProvider.postRequestData( this.userData, "result", currentUser.result.token )
+      	.then((data)=>{
+
+	        loader.dismiss();
+	        this.responseData = data;
+	        if(this.responseData.status == 'OK'){
+	    		console.log("save result!!!");
+	        }
+
+	    },(err)=>{
+
+	        loader.dismiss();
+	        if (err.status == 400) {
+	          this.messageOK('Error inesperado', err.error.result.msg);
+	        } else {
+	          this.messageOK('Error', 'Estimado Usuario, Ocurrio un error a la hora de realizar la operación');
+	        }
+
+	    });
 	}
 
 	replay() {
@@ -88,6 +103,17 @@ export class ResultPage {
 	addClass(i) {
 
 		return (i % 2 == 0 ? "bg-color-0" : "bg-color-1");
+	}
+
+	messageOK(title: string, msg: string) {
+
+		//console.log(msg);
+		let alert = this.alertCtrl.create({
+			title: title,
+			subTitle: msg,
+			buttons: ['OK']
+		});
+		alert.present();
 	}
 
 	ionViewDidLoad() {

@@ -228,14 +228,15 @@
 	margin-bottom: 10px;
 }
 .content-app-game .custom-label-quiz {
-	padding: 5px 2px;
+	padding: 5px 1px;
 }
 .content-app-game .custom-label-quiz div {
 	padding: 5px 0px;
 	border-radius: 5px;
 	border: solid;
 	color: #fff;
-	font-size: 16px;
+	font-size: 14px;
+	white-space: nowrap;
 }
 .content-app-game .check-btn {
 	background-color: #444f68;
@@ -275,6 +276,7 @@
 	margin: 5px 0px;
 	padding: 20px 0px;
 	background-color: #fff;
+	border-radius: 5px;
 }
 .content-app .result-btn {
 	background-color: #444f68;
@@ -288,6 +290,7 @@
 	font-size: 12px;
 	color: #444f68;
 	margin-bottom: 20px;
+	border-radius: 5px;
 }
 .bg-color-0 {
 	color: #fff;
@@ -301,7 +304,7 @@
 	color: #fff;
 }
 .autor-name {
-	margin-top: -50px;
+	margin-top: -30px;
 	margin-bottom: 20px;
 	font-size: 16px;
 	color: #eee;

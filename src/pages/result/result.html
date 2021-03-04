@@ -25,7 +25,7 @@
 				</ion-col>
 			</ion-row>
 			<div class="result-quizzes">
-				<ion-row align-items-center *ngFor="let quiz of quizzes; let i = index;" class="{{addClass(i)}} row">
+				<ion-row align-items-center *ngFor="let quiz of questions; let i = index;" class="{{addClass(i)}} row">
 					<ion-col>{{quiz.title}}</ion-col>
 					<ion-col>{{quiz.clue}}</ion-col>
 					<ion-col col-auto>

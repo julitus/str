@@ -27,8 +27,6 @@ export class GamePage {
 
 	challenge: any;
 	questions: any;
-	//superQuiz: any;
-	quizzes: any[] = [];
 	elementsPos: any[] = [];
 	currentPos: any = 0;
 	inputAnswer: string;
@@ -63,15 +61,6 @@ export class GamePage {
 		this.hasKey = (this.challenge.code.trim() != "");
 		this.titleQuiz = this.challenge.name;
 
-		/*this.questions = [{id:1, challenge_id:this.challenge.id, label:'A', title:'Empieza con A', clue:'Son todas las Ass', answer: 'Abocado', points:1}];
-
-		for (var i = 0; i < this.questions.length; ++i) {
-			this.questions[i]["color"] = "#068cce";
-			this.questions[i]["score"] = 0;
-			this.elementsPos.push(i);
-		}
-
-		this.currentQuiz = this.questions[this.currentPos];*/
 		this.getChallenge();
 
 		nativeAudio.preloadSimple('success', 'assets/sounds/success-sound.wav');
@@ -231,6 +220,7 @@ export class GamePage {
 	endChallenge() {
 
 		this.navCtrl.setRoot(ResultPage, {
+			challenge_id: this.challenge.id,
 			title: this.titleQuiz, 
 			score: this.score, 
 			time: (this.constTime - this.initTime),

@@ -5,22 +5,22 @@
 				<ion-col col-md-4 col-6 class="game-score"><span>Puntos: </span><b>{{score}}</b></ion-col>
 				<ion-col col-md-4 offset-md-4 col-5 offset-1 class="game-time">{{initTime}}</ion-col>
 			</ion-row>
-			<ion-row class="row-label">
+			<ion-row *ngIf="questions" class="row-label">
   				<ion-col class="custom-label-quiz" col-1 *ngFor="let quiz of questions; let i = index;">
   					<div [ngStyle]="{ 'background-color' : quiz.color, 'border-color' : (i == currentPos ? '#eee' : 'transparent') }">{{quiz.label}}</div>
   				</ion-col>
   			</ion-row>
-			<ion-row>
+			<ion-row *ngIf="questions">
 				<ion-col col-12 class="game-point">
 					<b>(</b>Por <b>{{currentQuiz.points}}</b> punto(s)<b>)</b>
 				</ion-col>
 			</ion-row>
-			<ion-row>
+			<ion-row *ngIf="questions">
 				<ion-col col-12 class="game-title">
 					{{currentQuiz.title}}
 				</ion-col>
 			</ion-row>
-			<ion-row>
+			<ion-row *ngIf="questions">
 				<ion-col col-12 class="game-clue">
 					{{currentQuiz.clue}}
 				</ion-col>

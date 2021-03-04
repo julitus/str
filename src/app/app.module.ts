@@ -28,7 +28,7 @@ import { AuthProvider } from '../providers/auth/auth';
 import { ChallengeProvider } from '../providers/challenge/challenge';
 import { PlayerProvider } from '../providers/player/player';
 
-import { TextInputDirective } from '../directives/text-input/text-input';
+//import { TextInputDirective } from '../directives/text-input/text-input';
 
 @NgModule({
   declarations: [
@@ -40,8 +40,8 @@ import { TextInputDirective } from '../directives/text-input/text-input';
     ChangePasswordPage,
     GamePage,
     GamesPage,
-    ResultPage,
-    TextInputDirective
+    ResultPage/*,
+    TextInputDirective*/
   ],
   imports: [
     BrowserModule,
