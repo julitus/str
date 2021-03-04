@@ -1,6 +1,46 @@
 <ion-content padding>
+
 	<div class="content-app" text-center>
-		<div class="custom-start">
+
+		<div class="div-btn-header">
+  			<button><ion-icon (click)="goToHome()" name="arrow-back"></ion-icon></button>
+  		</div>
+
+  		<div class="custom-games">
+  			<div>
+  				<img src="/assets/imgs/logo.png">
+  				<h4>{{creator.name}}</h4>
+  				<p>{{creator.description}}</p>
+  			</div>
+		</div>
+
+  		<div class="cards-list" *ngIf="challenges && challenges.length">
+	        <ion-card *ngFor="let challenge of challenges; let i = index;">
+	          <ion-card-header (click)="checkToGame(challenge)" [class]="challenge.code.trim() == '' ? 'card-header card-header-md' : 'card-header card-header-md key-bg'">
+	            <label>{{challenge.name}}</label><br>
+	            <span><ion-icon name="trophy"></ion-icon>: </span>{{challenge.points}}&nbsp;&nbsp;&nbsp;
+	            <span><ion-icon name="alarm"></ion-icon>: </span>{{challenge.time}} s&nbsp;&nbsp;&nbsp;
+	            <span><ion-icon name="bulb"></ion-icon>: </span>{{challenge.rows}}&nbsp;&nbsp;&nbsp;
+	            <i *ngIf="challenge.results.length">
+	            	<span><ion-icon name="flag"></ion-icon>: </span>{{challenge.results[0].attemps}}
+	        	</i>
+	        	<i *ngIf="!challenge.results.length">
+	            	<span><ion-icon name="flag"></ion-icon>: </span>0
+	        	</i>
+	        	<span *ngIf="challenge.code.trim() != ''" class="abs-span"><ion-icon name="lock"></ion-icon></span>
+	          </ion-card-header>
+	        </ion-card>
+	     </div>
+
+	     <div class="cards-list" *ngIf="!challenges || !challenges.length">
+	        <ion-card>
+	          <ion-card-header>
+	           <span>No tiene desafios activos</span>
+	          </ion-card-header>
+	        </ion-card>
+	      </div>
+
+		<!--div class="custom-start">
 			<div class="custom-refresh">
 				<label *ngIf="lastUpdated"><b>Actualizado:</b> {{ lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</label>
 				<button ion-button icon-only round outline (click)="updateUser()"><ion-icon name="person"></ion-icon></button>
@@ -18,9 +58,6 @@
       				</ion-col>
       			</ion-row>
       		</ion-grid>
-			<!--button ion-button class="custom-btn" round large (click)="initGame()">
-				Empezar&nbsp;&nbsp;<ion-icon ios="ios-create" md="md-create"></ion-icon>
-			</button-->
-		</div>
+		</div-->
 	</div>  
 </ion-content>

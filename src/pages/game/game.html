@@ -1,10 +1,3 @@
-<!--
-  Generated template for the GamePage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-
 <ion-content padding>
 	<div class="content-app-game" text-center>
 		<ion-grid>
@@ -13,7 +6,7 @@
 				<ion-col col-md-4 offset-md-4 col-5 offset-1 class="game-time">{{initTime}}</ion-col>
 			</ion-row>
 			<ion-row class="row-label">
-  				<ion-col class="custom-label-quiz" col-1 *ngFor="let quiz of quizzes; let i = index;">
+  				<ion-col class="custom-label-quiz" col-1 *ngFor="let quiz of questions; let i = index;">
   					<div [ngStyle]="{ 'background-color' : quiz.color, 'border-color' : (i == currentPos ? '#eee' : 'transparent') }">{{quiz.label}}</div>
   				</ion-col>
   			</ion-row>

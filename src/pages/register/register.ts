@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 
-import { LoginPage } from '../login/login';
-
 import { AuthProvider } from '../../providers/auth/auth';
 
 /**
@@ -88,8 +86,8 @@ export class RegisterPage {
         loader.dismiss();
         this.responseData = data;
         if(this.responseData.status == 'OK'){
-          this.messageOK('Felicidades', 'Tu registro se realizó satisfactoriamente, ya puedes iniciar sesión.');
-          this.goToLogin();
+          this.messageOK('Felicidades', 'Tu registro se realizó satisfactoriamente, ya puedes iniciar sesión');
+          this.goToBack();
         }
 
       },(err)=>{
@@ -106,10 +104,6 @@ export class RegisterPage {
       });
 
     }
-  }
-
-  goToLogin(){
-    this.navCtrl.setRoot(LoginPage);
   }
 
   goToBack() {

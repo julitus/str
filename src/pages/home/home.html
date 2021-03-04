@@ -1,4 +1,45 @@
 <ion-content padding>
-	
+
+	<div class="content-app" text-center>
+		
+		<div class="div-btn-header">
+  			<button><ion-icon (click)="goToChangePassword()" name="lock"></ion-icon></button>
+  			<button><ion-icon (click)="goToProfile()" name="person"></ion-icon></button>
+  			<button class="e-right"><ion-icon (click)="logout()" name="log-out"></ion-icon></button>
+  		</div>
+
+  		<div class="div-btn-footer">
+  			<button class="e-right"><ion-icon (click)="formConnection()" name="add"></ion-icon></button>
+  		</div>
+  		
+  		<div class="custom-home">
+  			<div>
+  				<img src="/assets/imgs/logo.png">
+  			</div>
+		  </div>
+
+      <div class="cards-list" *ngIf="connections && connections.length">
+        <ion-card *ngFor="let conn of connections; let i = index;">
+          <ion-card-header *ngIf="conn.active" (click)="goToGames(conn.user)">
+            <label>{{conn.user.name}}</label><br>
+            <span><ion-icon name="unlock"></ion-icon>: </span>{{conn.user.code}}&nbsp;&nbsp;&nbsp;
+            <i><span><ion-icon name="flag"></ion-icon>:</span> {{conn.attemps}}</i>
+          </ion-card-header>
+          <ion-card-header *ngIf="!conn.active" class="disabled">
+            <label>{{conn.user.name}}</label><br>
+            <i><span class="error-msg">(Su participación fue deshabilitada)</span></i>
+          </ion-card-header>
+        </ion-card>
+      </div>
+
+      <div class="cards-list" *ngIf="!connections || !connections.length">
+        <ion-card>
+          <ion-card-header>
+           <span>No se enlazó ningún creador</span>
+          </ion-card-header>
+        </ion-card>
+      </div>
+
+  	</div>
 	
 </ion-content>

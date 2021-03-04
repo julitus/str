@@ -38,6 +38,12 @@
 	font-size: 12px;
 	color: red;
 }
+.error-msg {
+	color: #ff0000;
+}
+.e-right {
+	float: right;
+}
 .item-md.item-input.input-has-focus .item-inner, .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner, .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
     box-shadow: none;
 }
@@ -48,13 +54,21 @@
 	z-index: 20;
 	color: #999;
 }
-.back-btn-header {
+.div-btn-header {
 	position: absolute;
+	width: 100%;
+	text-align: left;
 }
-.back-btn-header button {
+.div-btn-footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	text-align: left;
+}
+.div-btn-header button, .div-btn-footer button {
 	background-color: transparent;
 }
-.back-btn-header button .icon-md {
+.div-btn-header button .icon-md, .div-btn-footer button .icon-md {
 	color: #ffb100;
 	margin: 0;
 	background-color: rgba(255, 206, 93, .2);
@@ -76,9 +90,12 @@
 	height: 100%;
 	position: relative;
 }
-.content-app .custom-login, .content-app .custom-register {
+.content-app .custom-login, .content-app .custom-register, .content-app .custom-home, .content-app .custom-games {
 	margin: auto;
 	text-align: center;
+}
+.content-app .custom-home img {
+	margin-top: 50px;
 }
 .content-app .custom-login img, .content-app .custom-register img {
 	margin-bottom: 10px;
@@ -140,6 +157,18 @@
 .content-app .custom-start img {
 	margin-bottom: 40px;
 	margin-top: 60px;
+}
+.content-app .custom-games img {
+	margin-top: 20px;
+	width: 160px;
+}
+.content-app .custom-games h4 {
+	color: #fff;
+	margin-top: 5px;
+}
+.content-app .custom-games p {
+	color: #fff;
+	margin-bottom: 16px;
 }
 .content-app .result-img img {
 	width: 80%;
@@ -280,6 +309,31 @@
 .content-app .custom-start .custom-refresh label {
 	font-size: 12px;
 	color: #eee;
+}
+.cards-list .card {
+	border-radius: 5px;
+}
+.cards-list .card .card-header {
+	font-size: 16px;
+	position: relative;
+}
+.cards-list .card .card-header.disabled {
+	background-color: #ccc;
+}
+.cards-list .card .card-header label {
+	font-weight: 600;
+}
+.cards-list .card .card-header span {
+	font-size: 12px;
+}
+.cards-list .card .card-header.key-bg {
+	background-color: #ffb100;
+}
+.cards-list .card .card-header .abs-span {
+	position: absolute;
+	top: 6px;
+    left: 10px;
+    font-size: 20px;
 }
 /*ion-app.md [padding] .scroll-content {
 	padding-bottom: 100px !important;

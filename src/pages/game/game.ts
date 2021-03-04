@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, ToastController, Platform } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, AlertController, ToastController } from 'ionic-angular';
 import { NativeAudio } from '@ionic-native/native-audio';
 
 import { ResultPage } from '../result/result';
+
+import { ChallengeProvider } from '../../providers/challenge/challenge';
 
 /**
  * Generated class for the GamePage page.
@@ -17,11 +19,15 @@ import { ResultPage } from '../result/result';
 })
 export class GamePage {
 
+	responseData: any;
+
 	initTime: any = 0;
 	constTime: any;
 	timer: any;
 
-	superQuiz: any;
+	challenge: any;
+	questions: any;
+	//superQuiz: any;
 	quizzes: any[] = [];
 	elementsPos: any[] = [];
 	currentPos: any = 0;
@@ -34,39 +40,93 @@ export class GamePage {
 	hasKey: boolean;
 	titleQuiz: any;
 
+	userData = {
+	    "challenge_id": ""
+	  };
+
 	constructor(
-		public platform: Platform,
 		public navCtrl: NavController, 
 		public navParams: NavParams,
 		public alertCtrl: AlertController,
 		public toastCtrl: ToastController,
-		private nativeAudio: NativeAudio
+		private nativeAudio: NativeAudio,
+		public loadingCtrl: LoadingController,
+		public challengeProvider: ChallengeProvider
 	) {
 
-		/*if (!this.platform.is('mobileweb') && !this.platform.is('core')) {
-			this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-		} else { }*/
+		console.log('construct!!!');
+		this.challenge = this.navParams.get('challenge');
+		this.userData.challenge_id = this.challenge.id;
 
-		this.superQuiz = navParams.get('quiz');
-		this.quizzes = this.superQuiz.quizzes;
-		this.constTime = this.superQuiz.time;
-		this.initTime = this.superQuiz.time;
-		this.hasKey = this.superQuiz.hasKey;
-		this.titleQuiz = this.superQuiz.title;
+		this.constTime = this.challenge.time;
+		this.initTime = this.challenge.time;
+		this.hasKey = (this.challenge.code.trim() != "");
+		this.titleQuiz = this.challenge.name;
 
-		for (var i = 0; i < this.quizzes.length; ++i) {
-			this.quizzes[i]["color"] = "#068cce";
-			this.quizzes[i]["score"] = 0;
+		/*this.questions = [{id:1, challenge_id:this.challenge.id, label:'A', title:'Empieza con A', clue:'Son todas las Ass', answer: 'Abocado', points:1}];
+
+		for (var i = 0; i < this.questions.length; ++i) {
+			this.questions[i]["color"] = "#068cce";
+			this.questions[i]["score"] = 0;
 			this.elementsPos.push(i);
 		}
 
-		this.currentQuiz = this.quizzes[this.currentPos];
+		this.currentQuiz = this.questions[this.currentPos];*/
+		this.getChallenge();
 
 		nativeAudio.preloadSimple('success', 'assets/sounds/success-sound.wav');
 		nativeAudio.preloadSimple('wrong', 'assets/sounds/wrong-sound.wav');
 		nativeAudio.preloadSimple('finish', 'assets/sounds/finish-sound.wav');
 		nativeAudio.preloadSimple('win', 'assets/sounds/win-sound.mp3');
-		//console.log(this.superQuiz);
+	}
+
+	ionViewDidLoad() {
+
+		this.startTimer();
+		console.log('ionViewDidLoad GamePage');
+	}
+
+	ionViewWillLeave() {
+
+		this.initTime = 0;
+		console.log("ionViewWillLeave GamePage :(");
+	}
+
+	async getChallenge() {
+
+		let currentUser = JSON.parse(localStorage.getItem("userData"));
+
+	      let loader = this.loadingCtrl.create({ content: "Cargando datos" });
+	      loader.present();
+
+	      await this.challengeProvider.postRequestData( this.userData, "get", currentUser.result.token )
+	      .then((data)=>{
+
+	        loader.dismiss();
+	        this.responseData = data;
+	        if(this.responseData.status == 'OK'){
+	        	this.questions = this.responseData.result.questions;
+
+				for (var i = 0; i < this.questions.length; ++i) {
+					this.questions[i]["color"] = "#068cce";
+					this.questions[i]["score"] = 0;
+					this.elementsPos.push(i);
+				}
+
+				this.currentQuiz = this.questions[this.currentPos];
+	    		console.log("this.questions", this.questions);
+	        }
+
+	      },(err)=>{
+
+	        loader.dismiss();
+	        if (err.status == 400) {
+	          this.messageOK('Error inesperado', err.error.result.msg);
+	        } else {
+	          this.messageOK('Error', 'Estimado Usuario, Ocurrio un error a la hora de realizar la operación');
+	        }
+
+	      });
 	}
 
 	getNextPosElement(op: boolean) {
@@ -76,16 +136,16 @@ export class GamePage {
 			let e = this.elementsPos.shift();
 			this.elementsPos.push(e);
 		}
-		return (this.elementsPos.length == 0 ? this.quizzes.length : this.elementsPos[0]);
+		return (this.elementsPos.length == 0 ? this.questions.length : this.elementsPos[0]);
 	}
 
 	jumpQuiz() {
 
-		this.quizzes[this.currentPos].color = "#f6af05";
-		this.quizzes[this.currentPos].score = 0;
+		this.questions[this.currentPos].color = "#f6af05";
+		this.questions[this.currentPos].score = 0;
 		this.currentPos = this.getNextPosElement(false);
 
-		this.currentQuiz = this.quizzes[this.currentPos];
+		this.currentQuiz = this.questions[this.currentPos];
 	}
 
 	checkAnswer() {
@@ -95,8 +155,8 @@ export class GamePage {
 			switch (typeAnswer) {
 				case 0:
 					this.nativeAudio.play('wrong');
-					this.quizzes[this.currentPos].color = "#ea0707";
-					this.quizzes[this.currentPos].score = 0;
+					this.questions[this.currentPos].color = "#ea0707";
+					this.questions[this.currentPos].score = 0;
 					this.inputAnswer = "";
 					this.currentPos = this.getNextPosElement(true);
 					this.wrong++;
@@ -104,32 +164,32 @@ export class GamePage {
 					break;
 				case 1:
 					this.nativeAudio.play('success');
-					this.quizzes[this.currentPos].color = "#05ba12";
-					this.quizzes[this.currentPos].score = this.quizzes[this.currentPos].points;
-					this.score += this.quizzes[this.currentPos].points;
+					this.questions[this.currentPos].color = "#05ba12";
+					this.questions[this.currentPos].score = this.questions[this.currentPos].points;
+					this.score += this.questions[this.currentPos].points;
 					this.inputAnswer = "";
 					this.currentPos = this.getNextPosElement(true);
 					this.successful++;
 					this.toastMessage("¡Es correcto!", 3000, "top", true);
 					break;
 				default:
-					this.messageOK("¡Casi!", "Escribiste: \"" + this.inputAnswer + "\",<br> quizás quisiste decir <br>\"" + this.quizzes[this.currentPos].answer + "\"");
+					this.messageOK("¡Casi!", "Escribiste: \"" + this.inputAnswer + "\",<br> quizás quisiste decir <br>\"" + this.questions[this.currentPos].answer + "\"");
 					break;
 			}
 
-			if (this.currentPos >= this.quizzes.length) {
+			if (this.currentPos >= this.questions.length) {
 				this.nativeAudio.play('win');
 				this.messageOK("¡Genial!", "Haz terminado el juego.");
 				this.endChallenge();
 			} else {
-				this.currentQuiz = this.quizzes[this.currentPos];
+				this.currentQuiz = this.questions[this.currentPos];
 			}
 		}
 	}
 
 	validateAnswer() {
 
-		let currentAnswer = this.quizzes[this.currentPos].answer.toLowerCase().replace(/ /g,'')/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
+		let currentAnswer = this.questions[this.currentPos].answer.toLowerCase().replace(/ /g,'')/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
 		let possibleAnswer = this.inputAnswer.toLowerCase().replace(/ /g,'')/*.normalize("NFD").replace(/[\u0300-\u036f]/g, "")*/;
 
 		if (possibleAnswer != currentAnswer) {
@@ -177,7 +237,7 @@ export class GamePage {
 			successful: this.successful, 
 			wrong: this.wrong,
 			hasKey: this.hasKey,
-			quizzes: this.quizzes,
+			questions: this.questions,
 			finish: this.getDate()
 		});
 		this.navCtrl.popToRoot();
@@ -238,16 +298,5 @@ export class GamePage {
 		toast.present();
 	}
 
-	ionViewDidLoad() {
-
-		this.startTimer();
-		console.log('ionViewDidLoad GamePage');
-	}
-
-	ionViewWillLeave() {
-
-		this.initTime = 0;
-		console.log("ionViewWillLeave GamePage :(");
-	}
 
 }
